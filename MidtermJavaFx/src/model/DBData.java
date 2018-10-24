@@ -3,6 +3,7 @@ package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +24,20 @@ public class DBData {
         }
     }
 
-    public void addNote(){
-        //todo ..
+    public void addNote(String type, String title, String note){
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO notes VALUES (" +
+                    type + "," +
+                    title + "," +
+                    note + ", null)"
+                    );
+        } catch(SQLException e){
+            throw new IllegalStateException("Cannot insert note: " + e.getMessage());
+        }
     }
 
-    public void removeNote(){
+    public void removeNote(String title){
         //TODO..
     }
 
