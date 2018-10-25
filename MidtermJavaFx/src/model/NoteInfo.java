@@ -5,12 +5,18 @@ public class NoteInfo {
     private String type;
     private String title;
     private String note;
+    private String date;
 
-    public NoteInfo(String type, String title, String note)
+    public NoteInfo(String type, String title, String note, String date)
     {
         this.type = type;
         this.title = title;
         this.note = note;
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public String getNote() {

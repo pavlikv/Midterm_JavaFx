@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.paint.Color;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +26,10 @@ public class DBData {
     public void addNote(String type, String title, String note){
         try {
             Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO notes VALUES (" +
-                    type + "," +
-                    title + "," +
-                    note + ", null)"
+            stmt.execute("INSERT INTO notes VALUES ('" +
+                    type + "','" +
+                    title + "','" +
+                    note + "', null,"+ java.time.LocalDate.now() +")"
                     );
         } catch(SQLException e){
             throw new IllegalStateException("Cannot insert note: " + e.getMessage());
@@ -46,9 +48,28 @@ public class DBData {
     }
 
     public List<NoteInfo> getNotes() {
-        //todo..
-        List<NoteInfo> list = new ArrayList<>();
-        return list;
+
+        try {
+
+            ResultSet results = conn.createStatement().executeQuery(
+                    "SELECT title, type, note, date FROM notes");
+
+            List<NoteInfo> list = new ArrayList<>();
+            while(results.next()){ //move to the next row and return true if successful
+                String type = results.getString("type");
+                String title = results.getString("title");
+                String note = results.getString("note");
+                String date = results.getString("date");
+
+
+                list.add(new NoteInfo(type,title,note,date));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new IllegalStateException("Cannot retrieve notes: " + e.getMessage());
+        }
     }
+
 
 }
