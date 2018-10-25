@@ -1,9 +1,6 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +35,14 @@ public class DBData {
     }
 
     public void removeNote(String title){
-        //TODO..
+        try
+        {
+            Statement stmt = conn.createStatement();
+            stmt.execute("DELETE FROM notes WHERE title='"+title+"'");
+
+        } catch(SQLException e){
+            throw new IllegalStateException("Cannot insert note: " + e.getMessage());
+        }
     }
 
     public List<NoteInfo> getNotes() {
