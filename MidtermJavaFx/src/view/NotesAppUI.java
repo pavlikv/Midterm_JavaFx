@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.NoteInfo;
 
@@ -30,22 +31,25 @@ public class NotesAppUI extends Application {
 
     private Scene getScene()
     {
-        VBox mainPanel = new VBox();
+        HBox mainPanel = new HBox();
         mainPanel.setPadding(new Insets(10));
-        mainPanel.setSpacing(10);
+        mainPanel.setSpacing(100);
 
+        mainPanel.setStyle("-fx-background-color: rgba(0,0,0,0.48)");
         mainPanel.getChildren().addAll(dataInputScreen(),dataViewScreen());
 
-        return new Scene(mainPanel, 1300, 600);
+        return new Scene(mainPanel, 1000, 600);
     }
 
     private HBox dataViewScreen(){
         HBox mainPanel = new HBox();
         VBox vPanel = new VBox();
         Label label = new Label("Notes");
-        label.setFont(new Font("Arial", 20));
+        label.setFont(Font.font("Arial", FontWeight.BOLD,20));
 
         //table.setEditable(true);
+        table.setPrefWidth(350);
+        table.setPrefHeight(490);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn titleCol = new TableColumn("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -84,9 +88,13 @@ public class NotesAppUI extends Application {
         HBox panel = new HBox();
         panel.setAlignment(Pos.TOP_RIGHT);
         VBox Vpanel = new VBox();
+        VBox buttonPanel = new VBox();
+
         Vpanel.setSpacing(10);
         TextField title = new TextField();
         TextArea note = new TextArea();
+        note.setPrefWidth(450);
+        note.setPrefHeight(500);
         ComboBox<String> list = new ComboBox<>();
         list.getItems().addAll("Quote", "URL", "Code", "TO-DO");
          /*list.valueProperty().addListener(new ChangeListener<String>() {
@@ -96,8 +104,13 @@ public class NotesAppUI extends Application {
             }
         });*/
         Button save = new Button("Save");
+        save.setPrefHeight(30);
+        save.setPrefWidth(100);
+        //buttonPanel.setAlignment(Pos.CENTER_RIGHT);
+
+
         Vpanel.getChildren().addAll(
-                list,
+                createTextInput("Type: ", list),
                 createTextInput("Title:  ", title),
                 createTextInput("Note: ", note),
                 save);
@@ -110,6 +123,7 @@ public class NotesAppUI extends Application {
     private HBox createTextInput(String prompt, Node inputElement)
     {
         Label label = new Label(prompt);
+        label.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD,15));
         HBox panel = new HBox();
         panel.getChildren().addAll(label, inputElement);
         return panel;
