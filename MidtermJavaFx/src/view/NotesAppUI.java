@@ -2,6 +2,8 @@ package view;
 
 import controller.Controller;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,7 +39,7 @@ public class NotesAppUI extends Application {
 
         mainPanel.setStyle("-fx-background-color: rgba(0,0,0,0.48)");
         mainPanel.getChildren().addAll(dataInputScreen(),dataViewScreen());
-
+        table.refresh();
         return new Scene(mainPanel, 1000, 600);
     }
 
@@ -88,25 +90,26 @@ public class NotesAppUI extends Application {
         HBox panel = new HBox();
         panel.setAlignment(Pos.TOP_RIGHT);
         VBox Vpanel = new VBox();
-        VBox buttonPanel = new VBox();
 
         Vpanel.setSpacing(10);
+
+        String type;
         TextField title = new TextField();
         TextArea note = new TextArea();
         note.setPrefWidth(450);
         note.setPrefHeight(500);
+
         ComboBox<String> list = new ComboBox<>();
         list.getItems().addAll("Quote", "URL", "Code", "TO-DO");
-         /*list.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                type = newValue;
-            }
-        });*/
+
+        //whatever the type is, change styles and other preferences.
+        list.valueProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(list.getSelectionModel().getSelectedItem().toString());
+        });
+
         Button save = new Button("Save");
         save.setPrefHeight(30);
         save.setPrefWidth(100);
-        //buttonPanel.setAlignment(Pos.CENTER_RIGHT);
 
 
         Vpanel.getChildren().addAll(
@@ -115,7 +118,8 @@ public class NotesAppUI extends Application {
                 createTextInput("Note: ", note),
                 save);
         save.setOnAction(event -> {
-            controller.handleNewNote(list.getValue(), title.getText(), note.getText());
+            controller.handleNewNote(list.getSelectionModel().getSelectedItem().toString(), title.getText(), note.getText());
+
         });
         panel.getChildren().addAll(Vpanel);
         return panel;

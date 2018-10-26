@@ -1,8 +1,10 @@
 package model;
 
-import javafx.scene.paint.Color;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +27,13 @@ public class DBData {
 
     public void addNote(String type, String title, String note){
         try {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = new Date();
             Statement stmt = conn.createStatement();
             stmt.execute("INSERT INTO notes VALUES ('" +
                     type + "','" +
                     title + "','" +
-                    note + "', null,"+ java.time.LocalDate.now() +")"
+                    note + "', null,'"+ dateFormat.format(date) +"')"
                     );
         } catch(SQLException e){
             throw new IllegalStateException("Cannot insert note: " + e.getMessage());
