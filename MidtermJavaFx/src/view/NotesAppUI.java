@@ -17,6 +17,9 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.NoteInfo;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class NotesAppUI extends Application {
@@ -86,6 +89,17 @@ public class NotesAppUI extends Application {
         }
     }
 
+    private void addDataToTable(NoteInfo note){
+        table.getItems().add(note);
+    }
+
+    private String getDate(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        Date date = new Date();
+
+        return dateFormat.format(date);
+    }
+
     private HBox dataInputScreen(){
         HBox panel = new HBox();
         panel.setAlignment(Pos.TOP_RIGHT);
@@ -93,7 +107,6 @@ public class NotesAppUI extends Application {
 
         Vpanel.setSpacing(10);
 
-        String type;
         TextField title = new TextField();
         TextArea note = new TextArea();
         note.setPrefWidth(450);
@@ -104,7 +117,24 @@ public class NotesAppUI extends Application {
 
         //whatever the type is, change styles and other preferences.
         list.valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println(list.getSelectionModel().getSelectedItem().toString());
+            String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
+            switch (noteTypeSelected){
+                case "Quote":
+                    //quotations
+                    //italics
+                    break;
+                case "URL":
+                    //make as a link
+                    break;
+                case "Code":
+                    //dark background
+                    //code style
+                    break;
+                case "TO-DO":
+                    //change to a to-do style note
+                    break;
+
+            }
         });
 
         Button save = new Button("Save");
@@ -117,9 +147,12 @@ public class NotesAppUI extends Application {
                 createTextInput("Title:  ", title),
                 createTextInput("Note: ", note),
                 save);
-        save.setOnAction(event -> {
-            controller.handleNewNote(list.getSelectionModel().getSelectedItem().toString(), title.getText(), note.getText());
 
+        save.setOnAction(event -> {
+            NoteInfo newNote = new NoteInfo(list.getSelectionModel().getSelectedItem().toString(),
+                    title.getText(),note.getText(),getDate());
+            controller.handleNewNote(newNote.getType(), newNote.getTitle(), newNote.getNote());
+            addDataToTable(newNote);
         });
         panel.getChildren().addAll(Vpanel);
         return panel;
