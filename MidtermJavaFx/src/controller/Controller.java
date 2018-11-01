@@ -2,6 +2,7 @@ package controller;
 
 import model.DBData;
 import model.NoteInfo;
+import model.ToDoNoteInfo;
 
 import java.util.List;
 
@@ -14,7 +15,6 @@ public class Controller
     }
 
     public boolean handleNewNote(String type, String title, String note){
-        //preform a little validation
         if(type == null || type.equals("")) {
             return false;
         }
@@ -23,7 +23,6 @@ public class Controller
     }
 
     public boolean handleDeleteNote(String title){
-        //preform a little validation
         if(title == null || title.equals("")) {
             return false;
         }
@@ -32,7 +31,45 @@ public class Controller
     }
 
     public List<NoteInfo> handleGetNotes(){
+
         return model.getNotes();
     }
 
+
+
+    public boolean handleNewToDoItem(String title){
+        if(title == null || title.equals("")) {
+            return false;
+        }
+        model.addToDoNote(title);
+        return true;
+    }
+
+    public boolean handleRemoveToDoItem(String title){
+        if(title == null || title.equals("")) {
+            return false;
+        }
+        model.removeToDoNote(title);
+        return true;
+    }
+
+    public boolean handleSetToCompleted(String title){
+        if(title == null || title.equals("")) {
+            return false;
+        }
+        model.markAsComplete(title);
+        return true;
+    }
+
+    public List<ToDoNoteInfo> handleGetToDo(){
+
+        return model.getToDONotes();
+    }
+
+    @Override
+    public String toString() {
+        return "Controller{" +
+                "model=" + model +
+                '}';
+    }
 }

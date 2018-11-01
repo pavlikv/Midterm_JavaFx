@@ -2,8 +2,6 @@ package view;
 
 import controller.Controller;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -13,9 +11,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.NoteInfo;
+import model.ToDoNoteInfo;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,7 +25,8 @@ import java.util.List;
 public class NotesAppUI extends Application {
 
     private Controller controller = new Controller();
-    private TableView table = new TableView();
+    private TableView noteTable = new TableView();
+    private TableView toDoTable = new TableView();
 
     @Override
     public void start(Stage stage) {
@@ -38,59 +39,89 @@ public class NotesAppUI extends Application {
     {
         HBox mainPanel = new HBox();
         mainPanel.setPadding(new Insets(10));
-        mainPanel.setSpacing(100);
+        mainPanel.setSpacing(50);
 
         mainPanel.setStyle("-fx-background-color: rgba(0,0,0,0.48)");
-        mainPanel.getChildren().addAll(dataInputScreen(),dataViewScreen());
-        table.refresh();
-        return new Scene(mainPanel, 1000, 600);
+        loadNoteTable();
+        loadToDoTable();
+        mainPanel.getChildren().addAll(dataInputScreen(),tabView());
+        return new Scene(mainPanel, 1200, 600);
     }
 
-    private HBox dataViewScreen(){
-        HBox mainPanel = new HBox();
-        VBox vPanel = new VBox();
-        Label label = new Label("Notes");
-        label.setFont(Font.font("Arial", FontWeight.BOLD,20));
+    private VBox tabView(){
+        String[] tabOptions = {"Notes", "To-Do"};
+        VBox panel = new VBox();
+        TabPane tabPane = new TabPane();
 
-        //table.setEditable(true);
-        table.setPrefWidth(350);
-        table.setPrefHeight(490);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        for (String tabName: tabOptions) {
+            Tab tab = new Tab();
+            tab.setText(tabName);
+            if(tabName.equals("Notes")){
+                tab.setContent(noteTable);
+            } else {
+                tab.setContent(toDoTable);
+            }
+            tabPane.getTabs().add(tab);
+        }
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        panel.getChildren().add(tabPane);
+        return panel;
+    }
+
+    private void loadNoteTable(){
+        noteTable.setPrefWidth(600);
+        noteTable.setPrefHeight(490);
+        noteTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn titleCol = new TableColumn("Title");
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn typeCol = new TableColumn("Type");
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        TableColumn noteCol = new TableColumn("Note");
+        noteCol.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         TableColumn dateCol = new TableColumn("Date");
+        dateCol.prefWidthProperty().setValue(10);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
+        noteTable.getColumns().addAll(titleCol, noteCol, dateCol);
 
-        table.getColumns().addAll(titleCol, typeCol, dateCol);
-
-        //add the data from the database to the table
-//        NoteInfo test = new NoteInfo("quote","this is the title","body of the note");
-//        table.getItems().add(test);
-
-        addDataToTable(controller.handleGetNotes());
-
-        vPanel.setSpacing(5);
-        vPanel.setPadding(new Insets(25, 0, 0, 10));
-        vPanel.getChildren().addAll(label, table);
-
-        //controller.handleNewNote("quote","title2","body of note2");
-        mainPanel.getChildren().add(vPanel);
-        return mainPanel;
+        addDataToTableNotes(controller.handleGetNotes());
     }
 
-    private void addDataToTable(List<NoteInfo> notes){
-        for( NoteInfo note : notes){
-            table.getItems().add(note);
+    private void loadToDoTable(){
+        toDoTable.setPrefWidth(600);
+        toDoTable.setPrefHeight(490);
+        toDoTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TableColumn titleCol = new TableColumn("Title");
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+        TableColumn CompletedCol = new TableColumn("Completed");
+        CompletedCol.setCellValueFactory(new PropertyValueFactory<>("completed"));
+
+
+        toDoTable.getColumns().addAll(titleCol, CompletedCol);
+
+        addDataToTableToDo(controller.handleGetToDo());
+    }
+
+
+    private void addDataToTableToDo(List<ToDoNoteInfo> notes){
+        for( ToDoNoteInfo note : notes){
+            toDoTable.getItems().add(note);
         }
     }
 
-    private void addDataToTable(NoteInfo note){
-        table.getItems().add(note);
+    private void addDataToTableToDO(ToDoNoteInfo note){
+        toDoTable.getItems().add(note);
+    }
+
+    private void addDataToTableNotes(List<NoteInfo> notes){
+        for( NoteInfo note : notes){
+            noteTable.getItems().add(note);
+        }
+    }
+
+    private void addDataToTableNotes(NoteInfo note){
+        noteTable.getItems().add(note);
     }
 
     private String getDate(){
@@ -118,22 +149,8 @@ public class NotesAppUI extends Application {
         //whatever the type is, change styles and other preferences.
         list.valueProperty().addListener((observable, oldValue, newValue) -> {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
-            switch (noteTypeSelected){
-                case "Quote":
-                    //quotations
-                    //italics
-                    break;
-                case "URL":
-                    //make as a link
-                    break;
-                case "Code":
-                    //dark background
-                    //code style
-                    break;
-                case "TO-DO":
-                    //change to a to-do style note
-                    break;
-
+            if(noteTypeSelected.equals("Code")){
+                //change style for the code type
             }
         });
 
@@ -149,10 +166,32 @@ public class NotesAppUI extends Application {
                 save);
 
         save.setOnAction(event -> {
-            NoteInfo newNote = new NoteInfo(list.getSelectionModel().getSelectedItem().toString(),
+//            note.setFont(Font.font("Verdana", FontPosture.ITALIC, 15));
+            String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
+
+            NoteInfo newNote = new NoteInfo(noteTypeSelected,
                     title.getText(),note.getText(),getDate());
-            controller.handleNewNote(newNote.getType(), newNote.getTitle(), newNote.getNote());
-            addDataToTable(newNote);
+            switch(noteTypeSelected){
+                case "Quote":
+
+                    break;
+
+                case "":
+                    break;
+
+            }
+            //add quotes... etc
+            String noteResult = "";
+            if(newNote.getType().equals("Quote")){
+                 noteResult= "\"" + newNote.getNote() + "\"";
+            }
+
+
+            controller.handleNewNote(newNote.getType(), newNote.getTitle(), noteResult);
+            newNote.setNote(noteResult);
+
+
+            addDataToTableNotes(newNote);
         });
         panel.getChildren().addAll(Vpanel);
         return panel;

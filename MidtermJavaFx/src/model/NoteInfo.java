@@ -1,6 +1,6 @@
 package model;
 
-public class NoteInfo {
+public class NoteInfo implements INote{
 
     private String type;
     private String title;
@@ -19,6 +19,10 @@ public class NoteInfo {
         return date;
     }
 
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public String getNote() {
         return note;
     }
@@ -27,13 +31,15 @@ public class NoteInfo {
         return type;
     }
 
-    public String getTitle() {
-        return title;
-    }
 
     @Override
     public String toString()
     {
         return "("+ type + ") -" + title + "\n" + note ;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 }

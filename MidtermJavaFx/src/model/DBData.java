@@ -47,7 +47,7 @@ public class DBData {
             stmt.execute("DELETE FROM notes WHERE title='"+title+"'");
 
         } catch(SQLException e){
-            throw new IllegalStateException("Cannot insert note: " + e.getMessage());
+            throw new IllegalStateException("Cannot remove note: " + e.getMessage());
         }
     }
 
@@ -72,6 +72,62 @@ public class DBData {
 
         } catch (SQLException e) {
             throw new IllegalStateException("Cannot retrieve notes: " + e.getMessage());
+        }
+    }
+
+    public void addToDoNote(String title){
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO todonotes VALUES (null,'" +
+                    title + "','" +
+                    ",false')"
+            );
+        } catch(SQLException e){
+            throw new IllegalStateException("Cannot insert todo note: " + e.getMessage());
+        }
+    }
+
+    public void removeToDoNote(String title){
+        try
+        {
+            Statement stmt = conn.createStatement();
+            stmt.execute("DELETE FROM todonotes WHERE title='"+title+"'");
+
+        } catch(SQLException e){
+            throw new IllegalStateException("Cannot remove todo note: " + e.getMessage());
+        }
+    }
+
+    public void markAsComplete(String title){
+        try
+        {
+            Statement stmt = conn.createStatement();
+            stmt.execute("UPDATE todonotes SET completed = 'true' " +
+                    "WHERE title='" + title +"'");
+
+        } catch(SQLException e){
+            throw new IllegalStateException("Cannot set to true: " + e.getMessage());
+        }
+    }
+
+    public List<ToDoNoteInfo> getToDONotes() {
+
+        try {
+
+            ResultSet results = conn.createStatement().executeQuery(
+                    "SELECT title, completed FROM todonotes");
+
+            List<ToDoNoteInfo> list = new ArrayList<>();
+            while(results.next()){ //move to the next row and return true if successful
+                Boolean type = results.getBoolean("completed");
+                String title = results.getString("title");
+
+                list.add(new ToDoNoteInfo(title,type));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new IllegalStateException("Cannot retrieve todo notes: " + e.getMessage());
         }
     }
 
