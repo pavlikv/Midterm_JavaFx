@@ -6,10 +6,10 @@ public class NoteInfo implements INote{
 
     private String type;
     private String title;
-    private String note;
+    private Label note;
     private String date;
 
-    public NoteInfo(String type, String title, String note, String date)
+    public NoteInfo(String type, String title, Label note, String date)
     {
         this.type = type;
         this.title = title;
@@ -21,11 +21,11 @@ public class NoteInfo implements INote{
         return date;
     }
 
-    public void setNote(String note) {
+    public void setNote(Label note) {
         this.note = note;
     }
 
-    public String getNote() {
+    public Label getNote() {
         return note;
     }
 
@@ -33,7 +33,6 @@ public class NoteInfo implements INote{
     public String getType() {
         return type;
     }
-
 
     @Override
     public String toString()

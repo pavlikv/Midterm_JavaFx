@@ -1,13 +1,12 @@
 package model;
 
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.DateFormat;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +29,13 @@ public class DBData {
 
     public void addNote(String type, String title, String note){
         try {
-            LocalDateTime time = LocalDateTime.now();
-            DateTimeFormatter dateFormatter = DateTimeFormatter
-                    .ofPattern("yyyy/MM/dd HH:mm");
-
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = new Date();
             Statement stmt = conn.createStatement();
             stmt.execute("INSERT INTO notes VALUES ('" +
                     type + "','" +
                     title + "','" +
-                    note + "', null,'"+ time.format(dateFormatter) +"')"
+                    note + "', null,'"+ dateFormat.format(date) +"')"
                     );
         } catch(SQLException e){
             throw new IllegalStateException("Cannot insert note: " + e.getMessage());
@@ -56,18 +53,19 @@ public class DBData {
         }
     }
 
-    public ObservableList<NoteInfo> getNotes() {
+    public List<NoteInfo> getNotes() {
 
         try {
 
             ResultSet results = conn.createStatement().executeQuery(
                     "SELECT title, type, note, date FROM notes");
 
-            ObservableList<NoteInfo> list = FXCollections.observableArrayList();
+            List<NoteInfo> list = new ArrayList<>();
             while(results.next()){ //move to the next row and return true if successful
                 String type = results.getString("type");
                 String title = results.getString("title");
-                String note = results.getString("note");
+                String noteAsString = results.getString("note");
+                Label note = new Label(noteAsString);
                 String date = results.getString("date");
 
 
@@ -115,22 +113,19 @@ public class DBData {
         }
     }
 
-    public ObservableList<ToDoNoteInfo> getToDONotes() {
+    public List<ToDoNoteInfo> getToDONotes() {
 
         try {
 
             ResultSet results = conn.createStatement().executeQuery(
                     "SELECT title, completed FROM todonotes");
 
-            ObservableList<ToDoNoteInfo> list = FXCollections.observableArrayList();
+            List<ToDoNoteInfo> list = new ArrayList<>();
             while(results.next()){ //move to the next row and return true if successful
-                String completed = results.getString("completed");
-                if(completed.equals("0")){
-                    completed = "false";
-                }
+                Boolean type = results.getBoolean("completed");
                 String title = results.getString("title");
 
-                list.add(new ToDoNoteInfo(title,completed));
+                list.add(new ToDoNoteInfo(title,type));
             }
             return list;
 
