@@ -1,17 +1,24 @@
 package model;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.scene.control.CheckBox;
+
 public class ToDoNoteInfo implements INote{
 
     private String title;
-    private Boolean completed;
+    private String completed;
 
 
-    public ToDoNoteInfo(String title, Boolean completed) {
+    public ToDoNoteInfo(String title, String completed) {
         this.title = title;
         this.completed = completed;
     }
 
-    public Boolean getCompleted() {
+    public void setCompleted(String changeTo){
+        completed = changeTo;
+    }
+
+    public String getCompleted() {
         return completed;
     }
 

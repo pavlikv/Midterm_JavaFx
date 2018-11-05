@@ -2,6 +2,9 @@ package view;
 
 import controller.Controller;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,16 +20,16 @@ import javafx.stage.Stage;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class NotesAppUI extends Application {
 
     private Controller controller = new Controller();
-    private TableView noteTable = new TableView();
-    private TableView toDoTable = new TableView();
+    private TableView<NoteInfo> noteTable = new TableView<>();
+    private TableView<ToDoNoteInfo> toDoTable = new TableView<>();
 
     @Override
     public void start(Stage stage) {
@@ -44,8 +47,9 @@ public class NotesAppUI extends Application {
         mainPanel.setStyle("-fx-background-color: rgba(0,0,0,0.48)");
         loadNoteTable();
         loadToDoTable();
+
         mainPanel.getChildren().addAll(dataInputScreen(),tabView());
-        return new Scene(mainPanel, 1200, 600);
+        return new Scene(mainPanel, 1300, 600);
     }
 
     private VBox tabView(){
@@ -64,22 +68,51 @@ public class NotesAppUI extends Application {
             tabPane.getTabs().add(tab);
         }
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        panel.getChildren().add(tabPane);
+
+        Button markAsComplete = new Button("Mark as Complete");
+        markAsComplete.setOnAction(event -> {
+            ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
+            if(selectedItemFromToDo != null){
+                //((Person) t.getTableView().getItems().get(t.getTablePosition().getRow())).setFirstName(t.getNewValue());
+                //toDoTable.getItems().get(toDoTable.getSelectionModel().getFocusedIndex()).setCompleted("true");
+                controller.handleSetToCompleted(selectedItemFromToDo.getTitle());
+//                toDoTable.getColumns().set(toDoTable.getSelectionModel().getSelectedIndex(),)
+            }
+
+        });
+        Button delete = new Button("Delete Selected");
+        delete.setOnAction(event -> {
+            NoteInfo selectedNotesItem = noteTable.getSelectionModel().getSelectedItem();
+            ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
+            if(selectedItemFromToDo != null){
+                toDoTable.getItems().remove(selectedItemFromToDo);
+                controller.handleRemoveToDoItem(selectedItemFromToDo.getTitle());
+            }
+            if(selectedNotesItem != null){
+                noteTable.getItems().remove(selectedNotesItem);
+                controller.handleDeleteNote(selectedNotesItem.getTitle());
+            }
+        });
+
+        panel.getChildren().addAll(tabPane,delete,markAsComplete);
         return panel;
     }
 
     private void loadNoteTable(){
-        noteTable.setPrefWidth(600);
-        noteTable.setPrefHeight(490);
+        noteTable.setPrefWidth(720);
+        noteTable.setPrefHeight(520);
         noteTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         TableColumn titleCol = new TableColumn("Title");
+        titleCol.setMinWidth(150);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         TableColumn noteCol = new TableColumn("Note");
+        noteCol.setMinWidth(430);
         noteCol.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         TableColumn dateCol = new TableColumn("Date");
-        dateCol.prefWidthProperty().setValue(10);
+        dateCol.setMinWidth(120);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         noteTable.getColumns().addAll(titleCol, noteCol, dateCol);
@@ -88,23 +121,24 @@ public class NotesAppUI extends Application {
     }
 
     private void loadToDoTable(){
-        toDoTable.setPrefWidth(600);
-        toDoTable.setPrefHeight(490);
+        toDoTable.setPrefWidth(720);
+        toDoTable.setPrefHeight(520);
         toDoTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn titleCol = new TableColumn("Title");
+        titleCol.setMinWidth(600);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-        TableColumn CompletedCol = new TableColumn("Completed");
-        CompletedCol.setCellValueFactory(new PropertyValueFactory<>("completed"));
+        TableColumn completedCol = new TableColumn("Completed");
+        completedCol.setMinWidth(100);
+        completedCol.setCellValueFactory(new PropertyValueFactory<>("completed"));
 
-
-        toDoTable.getColumns().addAll(titleCol, CompletedCol);
+        toDoTable.getColumns().addAll(titleCol, completedCol);
 
         addDataToTableToDo(controller.handleGetToDo());
     }
 
+    private void addDataToTableToDo(ObservableList<ToDoNoteInfo> notes){
 
-    private void addDataToTableToDo(List<ToDoNoteInfo> notes){
         for( ToDoNoteInfo note : notes){
             toDoTable.getItems().add(note);
         }
@@ -114,7 +148,7 @@ public class NotesAppUI extends Application {
         toDoTable.getItems().add(note);
     }
 
-    private void addDataToTableNotes(List<NoteInfo> notes){
+    private void addDataToTableNotes(ObservableList<NoteInfo> notes){
         for( NoteInfo note : notes){
             noteTable.getItems().add(note);
         }
@@ -125,10 +159,11 @@ public class NotesAppUI extends Application {
     }
 
     private String getDate(){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        Date date = new Date();
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter
+                .ofPattern("yyyy/MM/dd HH:mm");
 
-        return dateFormat.format(date);
+        return time.format(dateFormatter);
     }
 
     private HBox dataInputScreen(){

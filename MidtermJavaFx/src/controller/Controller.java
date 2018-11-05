@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.collections.ObservableList;
 import model.DBData;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
@@ -30,7 +31,7 @@ public class Controller
         return true;
     }
 
-    public List<NoteInfo> handleGetNotes(){
+    public ObservableList<NoteInfo> handleGetNotes(){
 
         return model.getNotes();
     }
@@ -61,7 +62,7 @@ public class Controller
         return true;
     }
 
-    public List<ToDoNoteInfo> handleGetToDo(){
+    public ObservableList<ToDoNoteInfo> handleGetToDo(){
 
         return model.getToDONotes();
     }

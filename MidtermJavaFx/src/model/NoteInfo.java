@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Label;
+
 public class NoteInfo implements INote{
 
     private String type;
@@ -26,6 +28,7 @@ public class NoteInfo implements INote{
     public String getNote() {
         return note;
     }
+
 
     public String getType() {
         return type;
