@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -205,25 +206,29 @@ public class NotesAppUI extends Application {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
 
             NoteInfo newNote = new NoteInfo(noteTypeSelected,
-                    title.getText(),note.getText(),getDate());
+                    title.getText(),new Label(note.getText()),getDate());
+            String text = newNote.getNote().getText();
             switch(noteTypeSelected){
                 case "Quote":
-
+                    //noteResult= "\"" + newNote.getNote() + "\"";
+                    //italics
+                    Label quoteLabel = new Label("\"" + newNote.getNote().getText() + "\"");
+                    quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                    newNote.setNote(quoteLabel);
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), quoteLabel.getText());
                     break;
 
-                case "":
+                case "URL":
+                    Hyperlink link = new Hyperlink();
+                    link.setText(text);
+                    link.setOnAction((ActionEvent e) -> {
+                        link.setVisited(false);
+                    });
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), link.getText());
                     break;
 
             }
             //add quotes... etc
-            String noteResult = "";
-            if(newNote.getType().equals("Quote")){
-                 noteResult= "\"" + newNote.getNote() + "\"";
-            }
-
-
-            controller.handleNewNote(newNote.getType(), newNote.getTitle(), noteResult);
-            newNote.setNote(noteResult);
 
 
             addDataToTableNotes(newNote);
