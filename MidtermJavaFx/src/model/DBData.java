@@ -1,6 +1,8 @@
 package model;
 
 
+import javafx.scene.control.Label;
+
 import java.sql.*;
 import java.text.DateFormat;
 import java.util.Date;
@@ -62,7 +64,8 @@ public class DBData {
             while(results.next()){ //move to the next row and return true if successful
                 String type = results.getString("type");
                 String title = results.getString("title");
-                String note = results.getString("note");
+                String noteAsString = results.getString("note");
+                Label note = new Label(noteAsString);
                 String date = results.getString("date");
 
 

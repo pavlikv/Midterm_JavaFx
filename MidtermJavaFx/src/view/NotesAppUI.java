@@ -2,6 +2,7 @@ package view;
 
 import controller.Controller;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -21,6 +22,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NotesAppUI extends Application {
 
@@ -143,6 +146,7 @@ public class NotesAppUI extends Application {
         note.setPrefWidth(450);
         note.setPrefHeight(500);
 
+
         ComboBox<String> list = new ComboBox<>();
         list.getItems().addAll("Quote", "URL", "Code", "TO-DO");
 
@@ -151,6 +155,7 @@ public class NotesAppUI extends Application {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
             if(noteTypeSelected.equals("Code")){
                 //change style for the code type
+                note.setFont(Font.font(java.awt.Font.MONOSPACED, 35));
             }
         });
 
@@ -170,26 +175,32 @@ public class NotesAppUI extends Application {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
 
             NoteInfo newNote = new NoteInfo(noteTypeSelected,
-                    title.getText(),note.getText(),getDate());
+                    title.getText(),new Label(note.getText()),getDate());
+
+            String text = newNote.getNote().getText();
+
+
             switch(noteTypeSelected){
                 case "Quote":
-
+                    //noteResult= "\"" + newNote.getNote() + "\"";
+                    //italics
+                    Label quoteLabel = new Label("\"" + newNote.getNote().getText() + "\"");
+                    quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                    newNote.setNote(quoteLabel);
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), quoteLabel.getText());
                     break;
 
-                case "":
+                case "URL":
+                    Hyperlink link = new Hyperlink();
+                    link.setText(text);
+                    link.setOnAction((ActionEvent e) -> {
+                        link.setVisited(false);
+                    });
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), link.getText());
                     break;
 
             }
             //add quotes... etc
-            String noteResult = "";
-            if(newNote.getType().equals("Quote")){
-                 noteResult= "\"" + newNote.getNote() + "\"";
-            }
-
-
-            controller.handleNewNote(newNote.getType(), newNote.getTitle(), noteResult);
-            newNote.setNote(noteResult);
-
 
             addDataToTableNotes(newNote);
         });
