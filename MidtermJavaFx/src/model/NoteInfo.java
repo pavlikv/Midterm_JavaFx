@@ -17,10 +17,6 @@ public class NoteInfo{
         this.date = date;
     }
 
-    public String getDate() {
-        return date;
-    }
-
     public void setNote(Text note) {
         this.note = note;
     }
@@ -33,13 +29,17 @@ public class NoteInfo{
         return type;
     }
 
-    @Override
-    public String toString()
-    {
-        return "("+ type + ") -" + title + "\n" + note ;
-    }
-
     public Text getTitle() {
         return title;
+    }
+
+    @Override
+    public String toString() {
+        return "NoteInfo{" +
+                "type='" + type + '\'' +
+                ", title=" + title +
+                ", note=" + note +
+                ", date='" + date + '\'' +
+                '}';
     }
 }

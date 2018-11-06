@@ -5,7 +5,6 @@ import model.DBData;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
 
-import java.util.List;
 
 public class Controller
 {
@@ -32,7 +31,6 @@ public class Controller
     }
 
     public ObservableList<NoteInfo> handleGetNotes(){
-
         return model.getNotes();
     }
 

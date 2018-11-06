@@ -12,6 +12,11 @@ import java.time.format.DateTimeFormatter;
 
 public class DBData {
 
+    public static final int TITLE_WRAPPING = 140;
+    public static final int CODE_WRAPPING = 220;
+    public static final int OTHER_TYPE_WRAPPING = 420;
+    public static final int QUOTE_FONT_SIZE = 12;
+    public static final int WRAPPING_VALUE = 580;
     private Connection conn;
 
     public DBData(){
@@ -71,20 +76,18 @@ public class DBData {
                 Text note = new Text(noteAsString);
                 String date = results.getString("date");
 
-                title.wrappingWidthProperty().setValue(140);
+                title.wrappingWidthProperty().setValue(TITLE_WRAPPING);
                 if(type.equals("Code")){
-                    note.wrappingWidthProperty().setValue(220);
+                    note.wrappingWidthProperty().setValue(CODE_WRAPPING);
                 }else {
-                    note.wrappingWidthProperty().setValue(420);
+                    note.wrappingWidthProperty().setValue(OTHER_TYPE_WRAPPING);
                 }
 
 
                 if(type.equals("Quote")){
-                    note.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                    note.setFont(Font.font("Verdana", FontPosture.ITALIC, QUOTE_FONT_SIZE));
                 } else if(type.equals("URL")){
                     note.setUnderline(true);
-                } else { //code segment
-
                 }
 
                 list.add(new NoteInfo(type,title,note,date));
@@ -145,7 +148,7 @@ public class DBData {
                     completed = "false";
                 }
                 Text title = new Text(results.getString("title"));
-                title.wrappingWidthProperty().setValue(580);
+                title.wrappingWidthProperty().setValue(WRAPPING_VALUE);
 
                 list.add(new ToDoNoteInfo(title,completed));
             }
@@ -157,5 +160,10 @@ public class DBData {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "DBData{" +
+                "conn=" + conn +
+                '}';
+    }
 }

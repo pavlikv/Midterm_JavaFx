@@ -13,18 +13,6 @@ public class ToDoNoteInfo{
         this.completed = completed;
     }
 
-    public void setTitle(Text title) {
-        this.title = title;
-    }
-
-    public void setCompleted(String changeTo){
-        completed = changeTo;
-    }
-
-    public String getCompleted() {
-        return completed;
-    }
-
     @Override
     public String toString() {
         return "ToDoNoteInfo{" +

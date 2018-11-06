@@ -18,20 +18,42 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
-import java.awt.Desktop;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class NotesAppUI extends Application {
 
+    public static final int SCENE_WIDTH = 1300;
+    public static final int SCENE_HEIGHT = 600;
+    public static final int SCENE_SPACING = 50;
+    public static final int NOTE_TABLE_WIDTH = 720;
+    public static final int NOTE_TABLE_HEIGHT = 520;
+    public static final int TITLE_COL_WIDTH = 150;
+    public static final int NOTE_COL_WIDTH = 430;
+    public static final int DATE_COL_WIDTH = 120;
+    public static final int TITLE_COL_WIDTH_TODO = 600;
+    public static final int COMPLETED_COL_WIDTH_TODO = 100;
+    public static final int WRAPPING_VALUE = 580;
+    public static final int TITLE_WRAPPING = 140;
+    public static final int CODE_WRAPPING = 220;
+    public static final int OTHER_TYPE_WRAPPING = 420;
+    public static final int QUOTE_FONT_SIZE = 12;
+    public static final int CODE_FONT_SIZE = 18;
+    public static final int SAVE_BUTTON_HEIGHT = 30;
+    public static final int SAVE_BUTTON_WIDTH = 100;
+    public static final int NOTE_FIELD_WIDTH = 450;
+    public static final int NOTE_FIELD_HEIGHT = 500;
+    public static final int LABEL_FONT_SIZE = 15;
+
     private Controller controller = new Controller();
     private TableView<NoteInfo> noteTable = new TableView<>();
     private TableView<ToDoNoteInfo> toDoTable = new TableView<>();
+
+    private ComboBox<String> list = new ComboBox<>();
+    private Button save = new Button("Save");
+    private TextField titleField = new TextField();
+    private TextArea noteField = new TextArea();
 
     @Override
     public void start(Stage stage) {
@@ -44,15 +66,16 @@ public class NotesAppUI extends Application {
     {
         HBox mainPanel = new HBox();
         mainPanel.setPadding(new Insets(10));
-        mainPanel.setSpacing(50);
+        mainPanel.setSpacing(SCENE_SPACING);
 
         mainPanel.setStyle("-fx-background-color: rgba(0,0,0,0.48)");
         loadNoteTable();
         loadToDoTable();
 
         mainPanel.getChildren().addAll(dataInputScreen(),tabView());
-        return new Scene(mainPanel, 1300, 600);
+        return new Scene(mainPanel, SCENE_WIDTH, SCENE_HEIGHT);
     }
+
 
     private VBox tabView(){
         String[] tabOptions = {"Notes", "To-Do"};
@@ -72,15 +95,15 @@ public class NotesAppUI extends Application {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button markAsComplete = new Button("Mark as Complete");
+
         markAsComplete.setOnAction(event -> {
             ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
-            if(selectedItemFromToDo != null){
+            if(selectedItemFromToDo != null) {
                 //((Person) t.getTableView().getItems().get(t.getTablePosition().getRow())).setFirstName(t.getNewValue());
                 //toDoTable.getItems().get(toDoTable.getSelectionModel().getFocusedIndex()).setCompleted("true");
                 controller.handleSetToCompleted(selectedItemFromToDo.getTitle().getText());
-//                toDoTable.getColumns().set(toDoTable.getSelectionModel().getSelectedIndex(),)
+                //toDoTable.setStyle("");
             }
-
         });
         Button delete = new Button("Delete Selected");
         delete.setOnAction(event -> {
@@ -101,20 +124,21 @@ public class NotesAppUI extends Application {
     }
 
     private void loadNoteTable(){
-        noteTable.setPrefWidth(720);
-        noteTable.setPrefHeight(520);
+        noteTable.setPrefWidth(NOTE_TABLE_WIDTH);
+        noteTable.setPrefHeight(NOTE_TABLE_HEIGHT);
         noteTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn titleCol = new TableColumn("Title");
-        titleCol.setMinWidth(150);
+
+        titleCol.setMinWidth(TITLE_COL_WIDTH);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         TableColumn noteCol = new TableColumn("Note");
-        noteCol.setMinWidth(430);
+        noteCol.setMinWidth(NOTE_COL_WIDTH);
         noteCol.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         TableColumn dateCol = new TableColumn("Date");
-        dateCol.setMinWidth(120);
+        dateCol.setMinWidth(DATE_COL_WIDTH);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         noteTable.getColumns().addAll(titleCol, noteCol, dateCol);
@@ -123,15 +147,15 @@ public class NotesAppUI extends Application {
     }
 
     private void loadToDoTable(){
-        toDoTable.setPrefWidth(720);
-        toDoTable.setPrefHeight(520);
+        toDoTable.setPrefWidth(NOTE_TABLE_WIDTH);
+        toDoTable.setPrefHeight(NOTE_TABLE_HEIGHT);
         toDoTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn titleCol = new TableColumn("Title");
-        titleCol.setMinWidth(600);
+        titleCol.setMinWidth(TITLE_COL_WIDTH_TODO);
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
 
         TableColumn completedCol = new TableColumn("Completed");
-        completedCol.setMinWidth(100);
+        completedCol.setMinWidth(COMPLETED_COL_WIDTH_TODO);
         completedCol.setCellValueFactory(new PropertyValueFactory<>("completed"));
 
         toDoTable.getColumns().addAll(titleCol, completedCol);
@@ -147,7 +171,7 @@ public class NotesAppUI extends Application {
     }
 
     private void addDataToTableToDo(ToDoNoteInfo note){
-        note.getTitle().wrappingWidthProperty().setValue(580);
+        note.getTitle().wrappingWidthProperty().setValue(WRAPPING_VALUE);
         toDoTable.getItems().add(note);
     }
 
@@ -158,11 +182,11 @@ public class NotesAppUI extends Application {
     }
 
     private void addDataToTableNotes(NoteInfo note){
-        note.getTitle().wrappingWidthProperty().setValue(140);
+        note.getTitle().wrappingWidthProperty().setValue(TITLE_WRAPPING);
         if(note.getType().equals("Code")){
-            note.getNote().wrappingWidthProperty().setValue(220);
+            note.getNote().wrappingWidthProperty().setValue(CODE_WRAPPING);
         }else {
-            note.getNote().wrappingWidthProperty().setValue(420);
+            note.getNote().wrappingWidthProperty().setValue(OTHER_TYPE_WRAPPING);
         }
 
         if(note.getType().equals("URL")){
@@ -170,8 +194,8 @@ public class NotesAppUI extends Application {
 //            Desktop desktop = Desktop.getDesktop();
 //            try{
 //
-//                desktop.browse(new URI(note.getNote().getText()));
-//                runtime.exec(note.getNote().getText());
+//                desktop.browse(new URI(noteField.getNote().getText()));
+//                runtime.exec(noteField.getNote().getText());
 //
 //
 //            } catch (URISyntaxException|IOException e){
@@ -196,50 +220,44 @@ public class NotesAppUI extends Application {
         VBox vPanel = new VBox();
 
         vPanel.setSpacing(10);
+        setNoteInputSize();
 
-        TextField title = new TextField();
-        TextArea note = new TextArea();
-        note.setPrefWidth(450);
-        note.setPrefHeight(500);
-        note.setWrapText(true);
+        setSaveButtonSize();
 
-        ComboBox<String> list = new ComboBox<>();
         list.getItems().addAll("Quote", "URL", "Code", "TO-DO");
 
-        //whatever the type is, change styles and other preferences.
         list.valueProperty().addListener((observable, oldValue, newValue) -> {
-            String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
-            if(noteTypeSelected.equals("Code")){
-                //change style for the code type
-                note.setFont(Font.font(java.awt.Font.MONOSPACED, 18));
+            if(list.getSelectionModel().getSelectedItem().equals("Code")){
+                noteField.setFont(Font.font(java.awt.Font.MONOSPACED, CODE_FONT_SIZE));
+            }
+            if(list.getSelectionModel().getSelectedItem().equals("TO-DO")){
+                titleField.setVisible(false);
+
             }
         });
 
-        Button save = new Button("Save");
-        save.setPrefHeight(30);
-        save.setPrefWidth(100);
         vPanel.getChildren().addAll(
                 createTextInput("Type: ", list),
-                createTextInput("Title:  ", title),
-                createTextInput("Note: ", note),
+                createTextInput("Title:  ", titleField),
+                createTextInput("Note: ", noteField),
                 save);
 
         save.setOnAction(event -> {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem();
             if(noteTypeSelected.equals("TO-DO")){
-                ToDoNoteInfo newToDoNote = new ToDoNoteInfo(new Text(title.getText()),"false");
-                controller.handleNewToDoItem(title.getText());
+                ToDoNoteInfo newToDoNote = new ToDoNoteInfo(new Text(noteField.getText()),"false");
+                controller.handleNewToDoItem(noteField.getText());
                 addDataToTableToDo(newToDoNote);
             } else {
                 NoteInfo newNote = new NoteInfo(noteTypeSelected,
-                        new Text (title.getText()),new Text(note.getText()),getDate());
+                        new Text (titleField.getText()),new Text(noteField.getText()),getDate());
                 if(noteTypeSelected.equals("Quote")){
                         Text quoteLabel = new Text("\"" + newNote.getNote().getText() + "\"");
-                        quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                        quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, QUOTE_FONT_SIZE));
                         newNote.setNote(quoteLabel);
                         controller.handleNewNote(newNote.getType(), newNote.getTitle().getText(), quoteLabel.getText());
                 } else {
-                    controller.handleNewNote(newNote.getType(), newNote.getTitle().getText(), note.getText());
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle().getText(), noteField.getText());
                 }
                 addDataToTableNotes(newNote);
             }
@@ -249,10 +267,20 @@ public class NotesAppUI extends Application {
         return panel;
     }
 
+    private void setSaveButtonSize(){
+        save.setPrefHeight(SAVE_BUTTON_HEIGHT);
+        save.setPrefWidth(SAVE_BUTTON_WIDTH);
+    }
+    private void setNoteInputSize(){
+        noteField.setPrefWidth(NOTE_FIELD_WIDTH);
+        noteField.setPrefHeight(NOTE_FIELD_HEIGHT);
+        noteField.setWrapText(true);
+    }
+
     private HBox createTextInput(String prompt, Node inputElement)
     {
         Label label = new Label(prompt);
-        label.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD,15));
+        label.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, LABEL_FONT_SIZE));
         HBox panel = new HBox();
         panel.getChildren().addAll(label, inputElement);
         return panel;
