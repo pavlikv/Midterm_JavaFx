@@ -1,17 +1,20 @@
 package model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import javafx.scene.control.CheckBox;
+import javafx.scene.text.Text;
 
-public class ToDoNoteInfo implements INote{
+public class ToDoNoteInfo{
 
-    private String title;
+    private Text title;
     private String completed;
 
 
-    public ToDoNoteInfo(String title, String completed) {
+    public ToDoNoteInfo(Text title, String completed) {
         this.title = title;
         this.completed = completed;
+    }
+
+    public void setTitle(Text title) {
+        this.title = title;
     }
 
     public void setCompleted(String changeTo){
@@ -30,8 +33,7 @@ public class ToDoNoteInfo implements INote{
                 '}';
     }
 
-    @Override
-    public String getTitle() {
+    public Text getTitle() {
         return title;
     }
 }

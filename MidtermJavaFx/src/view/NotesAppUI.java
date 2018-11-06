@@ -2,10 +2,7 @@ package view;
 
 import controller.Controller;
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,11 +14,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
+import java.awt.Desktop;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -76,7 +77,7 @@ public class NotesAppUI extends Application {
             if(selectedItemFromToDo != null){
                 //((Person) t.getTableView().getItems().get(t.getTablePosition().getRow())).setFirstName(t.getNewValue());
                 //toDoTable.getItems().get(toDoTable.getSelectionModel().getFocusedIndex()).setCompleted("true");
-                controller.handleSetToCompleted(selectedItemFromToDo.getTitle());
+                controller.handleSetToCompleted(selectedItemFromToDo.getTitle().getText());
 //                toDoTable.getColumns().set(toDoTable.getSelectionModel().getSelectedIndex(),)
             }
 
@@ -87,11 +88,11 @@ public class NotesAppUI extends Application {
             ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
             if(selectedItemFromToDo != null){
                 toDoTable.getItems().remove(selectedItemFromToDo);
-                controller.handleRemoveToDoItem(selectedItemFromToDo.getTitle());
+                controller.handleRemoveToDoItem(selectedItemFromToDo.getTitle().getText());
             }
             if(selectedNotesItem != null){
                 noteTable.getItems().remove(selectedNotesItem);
-                controller.handleDeleteNote(selectedNotesItem.getTitle());
+                controller.handleDeleteNote(selectedNotesItem.getTitle().getText());
             }
         });
 
@@ -145,7 +146,8 @@ public class NotesAppUI extends Application {
         }
     }
 
-    private void addDataToTableToDO(ToDoNoteInfo note){
+    private void addDataToTableToDo(ToDoNoteInfo note){
+        note.getTitle().wrappingWidthProperty().setValue(580);
         toDoTable.getItems().add(note);
     }
 
@@ -156,6 +158,27 @@ public class NotesAppUI extends Application {
     }
 
     private void addDataToTableNotes(NoteInfo note){
+        note.getTitle().wrappingWidthProperty().setValue(140);
+        if(note.getType().equals("Code")){
+            note.getNote().wrappingWidthProperty().setValue(220);
+        }else {
+            note.getNote().wrappingWidthProperty().setValue(420);
+        }
+
+        if(note.getType().equals("URL")){
+//            Runtime runtime = Runtime.getRuntime();
+//            Desktop desktop = Desktop.getDesktop();
+//            try{
+//
+//                desktop.browse(new URI(note.getNote().getText()));
+//                runtime.exec(note.getNote().getText());
+//
+//
+//            } catch (URISyntaxException|IOException e){
+//
+//            }
+
+        }
         noteTable.getItems().add(note);
     }
 
@@ -170,14 +193,15 @@ public class NotesAppUI extends Application {
     private HBox dataInputScreen(){
         HBox panel = new HBox();
         panel.setAlignment(Pos.TOP_RIGHT);
-        VBox Vpanel = new VBox();
+        VBox vPanel = new VBox();
 
-        Vpanel.setSpacing(10);
+        vPanel.setSpacing(10);
 
         TextField title = new TextField();
         TextArea note = new TextArea();
         note.setPrefWidth(450);
         note.setPrefHeight(500);
+        note.setWrapText(true);
 
         ComboBox<String> list = new ComboBox<>();
         list.getItems().addAll("Quote", "URL", "Code", "TO-DO");
@@ -187,55 +211,44 @@ public class NotesAppUI extends Application {
             String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
             if(noteTypeSelected.equals("Code")){
                 //change style for the code type
+                note.setFont(Font.font(java.awt.Font.MONOSPACED, 18));
             }
         });
 
         Button save = new Button("Save");
         save.setPrefHeight(30);
         save.setPrefWidth(100);
-
-
-        Vpanel.getChildren().addAll(
+        vPanel.getChildren().addAll(
                 createTextInput("Type: ", list),
                 createTextInput("Title:  ", title),
                 createTextInput("Note: ", note),
                 save);
 
         save.setOnAction(event -> {
-//            note.setFont(Font.font("Verdana", FontPosture.ITALIC, 15));
-            String noteTypeSelected = list.getSelectionModel().getSelectedItem().toString();
-
-            NoteInfo newNote = new NoteInfo(noteTypeSelected,
-                    title.getText(),new Label(note.getText()),getDate());
-            String text = newNote.getNote().getText();
-            switch(noteTypeSelected){
-                case "Quote":
-                    //noteResult= "\"" + newNote.getNote() + "\"";
-                    //italics
-                    Label quoteLabel = new Label("\"" + newNote.getNote().getText() + "\"");
-                    quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
-                    newNote.setNote(quoteLabel);
-                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), quoteLabel.getText());
-                    break;
-
-                case "URL":
-                    Hyperlink link = new Hyperlink();
-                    link.setText(text);
-                    link.setOnAction((ActionEvent e) -> {
-                        link.setVisited(false);
-                    });
-                    controller.handleNewNote(newNote.getType(), newNote.getTitle(), link.getText());
-                    break;
-
+            String noteTypeSelected = list.getSelectionModel().getSelectedItem();
+            if(noteTypeSelected.equals("TO-DO")){
+                ToDoNoteInfo newToDoNote = new ToDoNoteInfo(new Text(title.getText()),"false");
+                controller.handleNewToDoItem(title.getText());
+                addDataToTableToDo(newToDoNote);
+            } else {
+                NoteInfo newNote = new NoteInfo(noteTypeSelected,
+                        new Text (title.getText()),new Text(note.getText()),getDate());
+                if(noteTypeSelected.equals("Quote")){
+                        Text quoteLabel = new Text("\"" + newNote.getNote().getText() + "\"");
+                        quoteLabel.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                        newNote.setNote(quoteLabel);
+                        controller.handleNewNote(newNote.getType(), newNote.getTitle().getText(), quoteLabel.getText());
+                } else {
+                    controller.handleNewNote(newNote.getType(), newNote.getTitle().getText(), note.getText());
+                }
+                addDataToTableNotes(newNote);
             }
-            //add quotes... etc
 
-
-            addDataToTableNotes(newNote);
         });
-        panel.getChildren().addAll(Vpanel);
+        panel.getChildren().addAll(vPanel);
         return panel;
     }
+
     private HBox createTextInput(String prompt, Node inputElement)
     {
         Label label = new Label(prompt);

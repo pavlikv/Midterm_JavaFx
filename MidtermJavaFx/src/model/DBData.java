@@ -1,15 +1,14 @@
 package model;
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DBData {
 
@@ -66,11 +65,27 @@ public class DBData {
             ObservableList<NoteInfo> list = FXCollections.observableArrayList();
             while(results.next()){ //move to the next row and return true if successful
                 String type = results.getString("type");
-                String title = results.getString("title");
+                String titleAsString = results.getString("title");
+                Text title = new Text(titleAsString);
                 String noteAsString = results.getString("note");
-                Label note = new Label(noteAsString);
+                Text note = new Text(noteAsString);
                 String date = results.getString("date");
 
+                title.wrappingWidthProperty().setValue(140);
+                if(type.equals("Code")){
+                    note.wrappingWidthProperty().setValue(220);
+                }else {
+                    note.wrappingWidthProperty().setValue(420);
+                }
+
+
+                if(type.equals("Quote")){
+                    note.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
+                } else if(type.equals("URL")){
+                    note.setUnderline(true);
+                } else { //code segment
+
+                }
 
                 list.add(new NoteInfo(type,title,note,date));
             }
@@ -86,7 +101,7 @@ public class DBData {
             Statement stmt = conn.createStatement();
             stmt.execute("INSERT INTO todonotes VALUES (null,'" +
                     title + "','" +
-                    ",false')"
+                    "false')"
             );
         } catch(SQLException e){
             throw new IllegalStateException("Cannot insert todo note: " + e.getMessage());
@@ -129,7 +144,8 @@ public class DBData {
                 if(completed.equals("0")){
                     completed = "false";
                 }
-                String title = results.getString("title");
+                Text title = new Text(results.getString("title"));
+                title.wrappingWidthProperty().setValue(580);
 
                 list.add(new ToDoNoteInfo(title,completed));
             }
