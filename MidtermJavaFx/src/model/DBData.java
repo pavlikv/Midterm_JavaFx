@@ -10,6 +10,10 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Zach Kunitsa, Pavel Vaschuk
+ * @version 1.0
+ */
 public class DBData {
 
     public static final int TITLE_WRAPPING = 140;
@@ -19,6 +23,9 @@ public class DBData {
     public static final int WRAPPING_VALUE = 580;
     private Connection conn;
 
+    /**
+     * connect to database
+     */
     public DBData(){
         try {
             //get connected to the database
@@ -32,6 +39,11 @@ public class DBData {
         }
     }
 
+    /**
+     * @param type add type of note
+     * @param title add title of not
+     * @param note add note itself
+     */
     public void addNote(String type, String title, String note){
         try {
             LocalDateTime time = LocalDateTime.now();
@@ -49,6 +61,9 @@ public class DBData {
         }
     }
 
+    /**
+     * @param title remove note with title
+     */
     public void removeNote(String title){
         try
         {
@@ -60,6 +75,9 @@ public class DBData {
         }
     }
 
+    /**
+     * @return the note
+     */
     public ObservableList<NoteInfo> getNotes() {
 
         try {
@@ -99,6 +117,10 @@ public class DBData {
         }
     }
 
+    /**
+     * add TO-DO note
+     * @param title title
+     */
     public void addToDoNote(String title){
         try {
             Statement stmt = conn.createStatement();
@@ -111,6 +133,10 @@ public class DBData {
         }
     }
 
+    /**
+     * remove TO-DO note
+     * @param title title
+     */
     public void removeToDoNote(String title){
         try
         {
@@ -122,6 +148,10 @@ public class DBData {
         }
     }
 
+    /**
+     * Mark a TO-DO note as completed
+     * @param title title
+     */
     public void markAsComplete(String title){
         try
         {
@@ -134,6 +164,9 @@ public class DBData {
         }
     }
 
+    /**
+     * @return TO-DO notes
+     */
     public ObservableList<ToDoNoteInfo> getToDONotes() {
 
         try {
