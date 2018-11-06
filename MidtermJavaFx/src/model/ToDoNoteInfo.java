@@ -1,21 +1,21 @@
 package model;
 
+import javafx.scene.text.Text;
 
 /**
  * @author Zach Kunitsa, Pavel Vaschuk
  * @version 1.0
  */
-public class ToDoNoteInfo implements INote{
+public class ToDoNoteInfo{
 
-    private String title;
+    private Text title;
     private String completed;
-
 
     /**
      * @param title title of note
      * @param completed completed to do
      */
-    public ToDoNoteInfo(String title, String completed) {
+    public ToDoNoteInfo(Text title, String completed) {
         this.title = title;
         this.completed = completed;
     }
@@ -28,8 +28,10 @@ public class ToDoNoteInfo implements INote{
                 '}';
     }
 
-    @Override
-    public String getTitle() {
+    /**
+     * @return title
+     */
+    public Text getTitle() {
         return title;
     }
 }

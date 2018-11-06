@@ -55,7 +55,7 @@ public class DBData {
                     type + "','" +
                     title + "','" +
                     note + "', null,'"+ time.format(dateFormatter) +"')"
-                    );
+            );
         } catch(SQLException e){
             throw new IllegalStateException("Cannot insert note: " + e.getMessage());
         }

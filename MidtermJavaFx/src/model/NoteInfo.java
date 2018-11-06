@@ -1,25 +1,26 @@
 package model;
 
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 /**
  * @author Zach Kunitsa, Pavel Vaschuk
  * @version 1.0
  */
-public class NoteInfo implements INote{
+public class NoteInfo{
 
     private String type;
-    private String title;
-    private Label note;
+    private Text title;
+    private Text note;
     private String date;
 
     /**
+     * constructor
      * @param type type
      * @param title title
      * @param note note
      * @param date date
      */
-    public NoteInfo(String type, String title, Label note, String date)
+    public NoteInfo(String type, Text title, Text note, String date)
     {
         this.type = type;
         this.title = title;
@@ -30,17 +31,16 @@ public class NoteInfo implements INote{
     /**
      * @param note set note
      */
-    public void setNote(Label note) {
+    public void setNote(Text note) {
         this.note = note;
     }
 
     /**
      * @return note
      */
-    public Label getNote() {
+    public Text getNote() {
         return note;
     }
-
 
     /**
      * @return type
@@ -49,8 +49,11 @@ public class NoteInfo implements INote{
         return type;
     }
 
-    @Override
-    public String getTitle() {
+
+    /**
+     * @return title
+     */
+    public Text getTitle() {
         return title;
     }
 
@@ -58,7 +61,7 @@ public class NoteInfo implements INote{
     public String toString() {
         return "NoteInfo{" +
                 "type='" + type + '\'' +
-                ", title='" + title + '\'' +
+                ", title=" + title +
                 ", note=" + note +
                 ", date='" + date + '\'' +
                 '}';

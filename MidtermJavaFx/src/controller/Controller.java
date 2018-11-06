@@ -5,8 +5,8 @@ import model.DBData;
 import model.NoteInfo;
 import model.ToDoNoteInfo;
 
-
 /**
+ * view class that builds the scene
  * @author Zach Kunitsa, Pavel Vaschuk
  * @version 1.0
  */
@@ -22,10 +22,10 @@ public class Controller
     }
 
     /**
-     * @param type pass in type of note
-     * @param title pass in title of note
-     * @param note pass in actual note
-     * @return true if note is added
+     * @param type type of note
+     * @param title title of note
+     * @param note actual note
+     * @return true if new note added
      */
     public boolean handleNewNote(String type, String title, String note){
         if(type == null || type.equals("")) {
@@ -37,7 +37,7 @@ public class Controller
 
     /**
      * @param title title
-     * @return true if note is deleted
+     * @return true if deleted note
      */
     public boolean handleDeleteNote(String title){
         if(title == null || title.equals("")) {
@@ -48,7 +48,7 @@ public class Controller
     }
 
     /**
-     * @return the note
+     * @return note
      */
     public ObservableList<NoteInfo> handleGetNotes(){
         return model.getNotes();
@@ -57,7 +57,7 @@ public class Controller
 
     /**
      * @param title title
-     * @return true if added to do note
+     * @return true if there is a new to do item
      */
     public boolean handleNewToDoItem(String title){
         if(title == null || title.equals("")) {
@@ -69,7 +69,7 @@ public class Controller
 
     /**
      * @param title title
-     * @return return true if to do was removed
+     * @return true of to do item removed
      */
     public boolean handleRemoveToDoItem(String title){
         if(title == null || title.equals("")) {
@@ -81,7 +81,7 @@ public class Controller
 
     /**
      * @param title title
-     * @return true if marked as completed
+     * @return true if to do is completed
      */
     public boolean handleSetToCompleted(String title){
         if(title == null || title.equals("")) {
