@@ -124,6 +124,7 @@ public class NotesAppUI extends Application {
         });
 
         buttonPanel.getChildren().addAll(deleteButton,markAsCompleteButton);
+        panel.setSpacing(10);
         panel.getChildren().addAll(tabPane,buttonPanel);
         return panel;
     }
@@ -225,10 +226,13 @@ public class NotesAppUI extends Application {
         list.valueProperty().addListener((observable, oldValue, newValue) -> {
             if(list.getSelectionModel().getSelectedItem().equals("Code")){
                 noteField.setFont(Font.font(java.awt.Font.MONOSPACED, CODE_FONT_SIZE));
+            } else {
+                noteField.setFont(Font.font("Verdana", QUOTE_FONT_SIZE));
             }
             if(list.getSelectionModel().getSelectedItem().equals("TO-DO")){
                 titleField.setVisible(false);
-
+            } else {
+                titleField.setVisible(true);
             }
         });
 
