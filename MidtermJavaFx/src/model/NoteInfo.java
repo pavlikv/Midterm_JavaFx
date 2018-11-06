@@ -3,7 +3,7 @@ package model;
 import javafx.scene.text.Text;
 
 /**
- * @author Zach Kunitsa, Pavel Vaschuk
+ * @author Zach Kunitsa, Pavel Vashchuk
  * @version 1.0
  */
 public class NoteInfo{
@@ -65,5 +65,13 @@ public class NoteInfo{
                 ", note=" + note +
                 ", date='" + date + '\'' +
                 '}';
+    }
+
+    /**
+     *
+     * @return current date
+     */
+    public String getDate() {
+        return date;
     }
 }

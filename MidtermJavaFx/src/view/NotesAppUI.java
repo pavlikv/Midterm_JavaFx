@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * view class that builds the scene
- * @author Zach Kunitsa, Pavel Vaschuk
+ * @author Zach Kunitsa, Pavel Vashchuk
  * @version 1.0
  */
 public class NotesAppUI extends Application {
@@ -56,6 +56,8 @@ public class NotesAppUI extends Application {
     private TableView<ToDoNoteInfo> toDoTable = new TableView<>();
 
     private ComboBox<String> list = new ComboBox<>();
+    private Button markAsCompleteButton = new Button("Mark as Complete");
+    private Button deleteButton = new Button("Delete Selected");
     private Button save = new Button("Save");
     private TextField titleField = new TextField();
     private TextArea noteField = new TextArea();
@@ -81,11 +83,12 @@ public class NotesAppUI extends Application {
         return new Scene(mainPanel, SCENE_WIDTH, SCENE_HEIGHT);
     }
 
-
     private VBox tabView(){
         String[] tabOptions = {"Notes", "To-Do"};
         VBox panel = new VBox();
         TabPane tabPane = new TabPane();
+        HBox buttonPanel = new HBox();
+        buttonPanel.setSpacing(10);
 
         for (String tabName: tabOptions) {
             Tab tab = new Tab();
@@ -99,19 +102,15 @@ public class NotesAppUI extends Application {
         }
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        Button markAsComplete = new Button("Mark as Complete");
-
-        markAsComplete.setOnAction(event -> {
+        markAsCompleteButton.setOnAction(event -> {
             ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
             if(selectedItemFromToDo != null) {
-                //((Person) t.getTableView().getItems().get(t.getTablePosition().getRow())).setFirstName(t.getNewValue());
                 //toDoTable.getItems().get(toDoTable.getSelectionModel().getFocusedIndex()).setCompleted("true");
                 controller.handleSetToCompleted(selectedItemFromToDo.getTitle().getText());
                 //toDoTable.setStyle("");
             }
         });
-        Button delete = new Button("Delete Selected");
-        delete.setOnAction(event -> {
+        deleteButton.setOnAction(event -> {
             NoteInfo selectedNotesItem = noteTable.getSelectionModel().getSelectedItem();
             ToDoNoteInfo selectedItemFromToDo = toDoTable.getSelectionModel().getSelectedItem();
             if(selectedItemFromToDo != null){
@@ -124,7 +123,8 @@ public class NotesAppUI extends Application {
             }
         });
 
-        panel.getChildren().addAll(tabPane,delete,markAsComplete);
+        buttonPanel.getChildren().addAll(deleteButton,markAsCompleteButton);
+        panel.getChildren().addAll(tabPane,buttonPanel);
         return panel;
     }
 
@@ -195,18 +195,9 @@ public class NotesAppUI extends Application {
         }
 
         if(note.getType().equals("URL")){
-//            Runtime runtime = Runtime.getRuntime();
-//            Desktop desktop = Desktop.getDesktop();
-//            try{
-//
-//                desktop.browse(new URI(noteField.getNote().getText()));
-//                runtime.exec(noteField.getNote().getText());
-//
-//
-//            } catch (URISyntaxException|IOException e){
-//
-//            }
-
+            Text newUrlStyle = note.getNote();
+            newUrlStyle.setUnderline(true);
+            note.setNote(newUrlStyle);
         }
         noteTable.getItems().add(note);
     }

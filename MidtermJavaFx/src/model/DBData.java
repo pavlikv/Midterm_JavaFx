@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @author Zach Kunitsa, Pavel Vaschuk
+ * @author Zach Kunitsa, Pavel Vashchuk
  * @version 1.0
  */
 public class DBData {
@@ -28,13 +28,11 @@ public class DBData {
      */
     public DBData(){
         try {
-            //get connected to the database
             this.conn = DriverManager.getConnection("jdbc:sqlite:MidtermJavaFx.sqlite");
-            Class.forName("org.sqlite.JDBC"); //fix out project path
+            Class.forName("org.sqlite.JDBC");
             System.out.println("Connected to MidtermDB");
 
         } catch (SQLException | ClassNotFoundException e) {
-            //rethrow our exception if we cannot connect
             throw new IllegalStateException("Cannot connect to model.db: " + e.getMessage());
         }
     }
@@ -86,7 +84,7 @@ public class DBData {
                     "SELECT title, type, note, date FROM notes");
 
             ObservableList<NoteInfo> list = FXCollections.observableArrayList();
-            while(results.next()){ //move to the next row and return true if successful
+            while(results.next()){
                 String type = results.getString("type");
                 String titleAsString = results.getString("title");
                 Text title = new Text(titleAsString);

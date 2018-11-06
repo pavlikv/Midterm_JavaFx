@@ -3,7 +3,7 @@ package model;
 import javafx.scene.text.Text;
 
 /**
- * @author Zach Kunitsa, Pavel Vaschuk
+ * @author Zach Kunitsa, Pavel Vashchuk
  * @version 1.0
  */
 public class ToDoNoteInfo{
@@ -18,6 +18,10 @@ public class ToDoNoteInfo{
     public ToDoNoteInfo(Text title, String completed) {
         this.title = title;
         this.completed = completed;
+    }
+
+    public String getCompleted(){
+        return completed;
     }
 
     @Override

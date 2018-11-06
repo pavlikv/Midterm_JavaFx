@@ -7,7 +7,7 @@ import model.ToDoNoteInfo;
 
 /**
  * view class that builds the scene
- * @author Zach Kunitsa, Pavel Vaschuk
+ * @author Zach Kunitsa, Pavel Vashchuk
  * @version 1.0
  */
 public class Controller
@@ -25,26 +25,25 @@ public class Controller
      * @param type type of note
      * @param title title of note
      * @param note actual note
-     * @return true if new note added
      */
-    public boolean handleNewNote(String type, String title, String note){
+    public void handleNewNote(String type, String title, String note){
         if(type == null || type.equals("")) {
-            return false;
+            System.out.println("Invalid newNote");
+        } else {
+            model.addNote(type, title, note);
         }
-        model.addNote(type,title,note);
-        return true;
+
     }
 
     /**
-     * @param title title
-     * @return true if deleted note
+     * @param title title of the item to remove
      */
-    public boolean handleDeleteNote(String title){
+    public void handleDeleteNote(String title){
         if(title == null || title.equals("")) {
-            return false;
+            System.out.println("Invalid Delete Note");
+        } else {
+            model.removeNote(title);
         }
-        model.removeNote(title);
-        return true;
     }
 
     /**
@@ -56,39 +55,36 @@ public class Controller
 
 
     /**
-     * @param title title
-     * @return true if there is a new to do item
+     * @param title title of the item to remove
      */
-    public boolean handleNewToDoItem(String title){
+    public void handleNewToDoItem(String title){
         if(title == null || title.equals("")) {
-            return false;
+            System.out.println("Invalid new to-do item");
+        } else {
+            model.addToDoNote(title);
         }
-        model.addToDoNote(title);
-        return true;
     }
 
     /**
-     * @param title title
-     * @return true of to do item removed
+     * @param title title of the item to remove
      */
-    public boolean handleRemoveToDoItem(String title){
+    public void handleRemoveToDoItem(String title){
         if(title == null || title.equals("")) {
-            return false;
+            System.out.println("Invalid newNote");
+        } else {
+            model.removeToDoNote(title);
         }
-        model.removeToDoNote(title);
-        return true;
     }
 
     /**
-     * @param title title
-     * @return true if to do is completed
+     * @param title title of the item to remove
      */
-    public boolean handleSetToCompleted(String title){
+    public void handleSetToCompleted(String title){
         if(title == null || title.equals("")) {
-            return false;
+            System.out.println("Invalid newNote");
+        } else {
+            model.markAsComplete(title);
         }
-        model.markAsComplete(title);
-        return true;
     }
 
     /**
